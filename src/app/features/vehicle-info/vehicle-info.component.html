@@ -1,0 +1,147 @@
+<div class="grid md:grid-cols-2">
+  <form class="p-8" [formGroup]="vehInfoForm" (ngSubmit)="onSubmit()">
+    <h2 class="text-xl font-bold text-blue-500">Voertuiginformatie opzoeken</h2>
+
+    <!-- SELECT VEHICLE TYPE-->
+    <label class="block mt-4">
+      <span class="text-gray-700"
+        >Van welk type voertuig wilt u voertuiginformatie opzoeken?</span
+      >
+      <select
+        class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 disabled:opacity-50"
+        name="vehicle-type"
+        formControlName="vehType"
+        [class.border-red-400]="
+          vehInfoForm.get('vehType')?.errors &&
+          vehInfoForm.get('vehType')?.touched
+        "
+        [class.bg-yellow-400]="
+          vehInfoForm.get('vehType')?.errors && formSubmitted
+        "
+      >
+        <option
+          *ngFor="let vehicleType of vehTypeArr"
+          [value]="vehicleType.vehType"
+        >
+          {{ vehicleType.vehType | capitalize }}
+        </option>
+      </select>
+      <ng-container
+        [ngTemplateOutlet]="formErrorHighlight"
+        [ngTemplateOutletContext]="{
+          fieldName: 'vehType',
+          errorTitle:
+            'Oeps, type voertuig is vereist om voertuiginformatie op te zoeken.'
+        }"
+      >
+      </ng-container>
+    </label>
+
+    <!-- SELECT VEHICLE SUBTYPE-->
+    <label class="block mt-4">
+      <span class="text-gray-700"
+        >Welk type
+        <ng-container [ngTemplateOutlet]="vehicleTypeSpan"></ng-container>
+        hebt u?</span
+      >
+      <select
+        class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 disabled:opacity-50"
+        name="vehicle-subtype"
+        formControlName="vehSubType"
+        [class.border-red-400]="
+          vehInfoForm.get('vehSubType')?.errors &&
+          vehInfoForm.get('vehSubType')?.touched
+        "
+        [class.bg-yellow-400]="
+          vehInfoForm.get('vehSubType')?.errors &&
+          vehInfoForm.get('vehSubType')?.touched &&
+          formSubmitted
+        "
+      >
+        <option
+          *ngFor="let vehSubType of selectedVehType?.vehSubTypeArr"
+          [value]="vehSubType"
+        >
+          {{ vehSubType }}
+        </option>
+      </select>
+      <ng-container
+        [ngTemplateOutlet]="formErrorHighlight"
+        [ngTemplateOutletContext]="{
+          fieldName: 'vehSubType',
+          errorTitle:
+            'Oeps, subtype voertuig is vereist om voertuiginformatie op te zoeken.'
+        }"
+      >
+      </ng-container>
+    </label>
+
+    <!-- INPUT LICENSE PLATE bg-yellow-400 border-red-400 focus:border-gray-500 focus:bg-yellow-300 -->
+    <label class="block mt-4">
+      <span class="text-gray-700"
+        >Vul het kenteken van uw
+        <ng-container [ngTemplateOutlet]="vehicleTypeSpan"></ng-container>
+        in.</span
+      >
+      <input
+        type="text"
+        class="block w-full mt-1 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 disabled:opacity-50"
+        name="kenteken"
+        placeholder="Bijvoorbeeld AA-BB-12"
+        formControlName="vehPlate"
+        [class.border-red-400]="
+          vehInfoForm.get('vehPlate')?.errors &&
+          vehInfoForm.get('vehPlate')?.touched
+        "
+        [class.bg-yellow-400]="
+          vehInfoForm.get('vehPlate')?.errors && formSubmitted
+        "
+      />
+      <ng-container
+        [ngTemplateOutlet]="formErrorHighlight"
+        [ngTemplateOutletContext]="{
+          fieldName: 'vehPlate',
+          errorTitle: 'Oeps, het ingevoerde kenteken is niet geldig.',
+          errorMessage: 'Gebruik het volgende formaat AA-12-BB.'
+        }"
+      >
+      </ng-container>
+    </label>
+
+    <div class="mt-4">
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        type="submit"
+      >
+        Verzenden
+      </button>
+      <div class="text-red-700" *ngIf="formSubmitted">
+        Vul alle waardes correct in.
+      </div>
+    </div>
+  </form>
+  <app-vehicle-info-image
+    [vehType]="selectedVehType?.vehType ?? null"
+  ></app-vehicle-info-image>
+</div>
+
+<ng-template #vehicleTypeSpan>
+  {{ selectedVehType ? selectedVehType.vehType : "[auto/motor/brommer]" }}
+</ng-template>
+
+<ng-template
+  #formErrorHighlight
+  let-fieldName="fieldName"
+  let-errorTitle="errorTitle"
+  let-errorMessage="errorMessage"
+>
+  <app-form-field-error
+    *ngIf="
+      vehInfoForm.get(fieldName)?.errors &&
+      vehInfoForm.get(fieldName)?.touched &&
+      formSubmitted
+    "
+    [errorTitle]="errorTitle"
+    [errorMessage]="errorMessage"
+  ></app-form-field-error>
+</ng-template>
