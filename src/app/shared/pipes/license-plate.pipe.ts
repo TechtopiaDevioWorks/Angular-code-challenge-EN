@@ -7,9 +7,9 @@ export class LicensePlatePipe implements PipeTransform {
     if (!value) return value;
     if (typeof value !== 'string') return value;
     let newValue = value.replace(/-|\s/g, '').trim();
-    const digitLetterRegex = /(\d+)/g;
+    const digitRegex = /(\d+)/g;
     newValue = newValue
-      .replace(digitLetterRegex, (match) => ' ' + match + ' ')
+      .replace(digitRegex, (match) => ' ' + match + ' ')
       .trim()
       .replace(/\s/g, '-');
     const multiLetterRegex = /([a-zA-Z]{4})/g;

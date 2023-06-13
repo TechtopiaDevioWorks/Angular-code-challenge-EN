@@ -50,6 +50,8 @@ export class VehicleInfoComponent implements OnInit, OnDestroy {
   vehTypeSubscription: Subscription | undefined;
   vehPlateSubscription: Subscription | undefined;
   formSubmitted = false;
+  formLoading = false;
+  formError: string|null = null;
   constructor(private licensePlatePipe: LicensePlatePipe) {}
 
   ngOnInit(): void {
@@ -98,8 +100,14 @@ export class VehicleInfoComponent implements OnInit, OnDestroy {
       });
   }
   onSubmit() {
-    this.formSubmitted = true;
-    this.vehInfoForm.markAllAsTouched();
-    console.log(this.vehInfoForm)
+    console.log(this.vehInfoForm.value)
+    this.formError = null;
+    this.formLoading = true;
+    setTimeout(() => {
+      this.formLoading = false;
+      this.formError = "Vul alle waardes correct in."
+      this.formSubmitted = true;
+      this.vehInfoForm.markAllAsTouched();
+    }, 1000);
   }
 }
